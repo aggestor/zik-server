@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Categorie;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class CategorieController extends Controller
 {
@@ -39,7 +40,7 @@ class CategorieController extends Controller
             Categorie::create([
                 'nom'=>$request->nom,
                 'description'=>$request->description,
-                'logo'=$logoPath
+                'logo'=>$logoPath
             ]);
 
             return ['type'=>'success','message'=>'Enregistrement reussi'];
@@ -57,13 +58,13 @@ class CategorieController extends Controller
     {
         try {
 
-            $categorie categorie::findOrFail($id);
+            $categorie = Categorie::findOrFail($id);
             return response()->json($categorie);
 
         } catch (\Throwable $th) {
 
            return "Cette gategorie n'existe pas";
-           
+
         }
         
     }
@@ -107,12 +108,12 @@ class CategorieController extends Controller
     {
         try {
             
-            $p = Categorie::where('id',$id)->get();
+            $cat = Categorie::where('id',$id)->get();
 
-            if (count($p) > 0) {
+            if (count($cat) > 0) {
 
-                if($p[0]->logo){
-                    Storage::delete($p->logo);
+                if($cat[0]->logo){
+                    Storage::delete($cat->logo);
                 }
                 Categorie::destroy($id);
                 return ['type'=>'success','message'=>'Suppression reussie'];

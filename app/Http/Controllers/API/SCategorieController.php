@@ -41,7 +41,7 @@ class SCategorieController extends Controller
                 'nom'=>$request->nom,
                 'description'=>$request->description,
                 'categorie_id'=>$request->categorie_id,
-                'logo'=$logoPath
+                'logo'=>$logoPath
             ]);
 
             return ['type'=>'success','message'=>'Enregistrement reussi'];
@@ -58,7 +58,7 @@ class SCategorieController extends Controller
     {
         try {
 
-            $categorie SCategorie::findOrFail($id);
+            $categorie = SCategorie::findOrFail($id);
             return response()->json($categorie);
 
         } catch (\Throwable $th) {
