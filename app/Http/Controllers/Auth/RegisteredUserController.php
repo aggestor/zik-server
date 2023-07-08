@@ -21,9 +21,12 @@ class RegisteredUserController extends Controller
     public function store(Request $request): Response
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255','unique:'.User::class],
+            'firstname' => ['required','string'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', Rules\Password::defaults()],
+            // 'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            
             'phone' => ['required', 'string', 'max:255', 'unique:'.User::class],
         ]);
 
@@ -31,8 +34,6 @@ class RegisteredUserController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-
-
             'lastname' => $request->lastname,
             'postname' => $request->postname,
             'firstname' => $request->firstname,
@@ -51,5 +52,46 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return response()->noContent();
+    }
+
+    public function update(Request $request){
+
+      try {
+
+        $user = User::find($id);
+        $user->username = $request->username;
+        $user->email = $request->email;
+        //$user->password = Hash::make($request->password);
+        $user->lastname = $request->lastname;
+        $user->postname = $request->postname;
+        $user->firstname = $request->firstname;
+        $user->phone = $request->phone;
+        $user->birthPlace = $request->birthPlace;
+        $user->birthDate = $request->birthDate;
+        $user->province = $request->province;
+        $user->city = $request->city;
+        // $user->image = $request->image;
+        $user->socialMedia = $request->socialMedia;
+        $user->description = $request->description;
+        $user->save();
+
+        return ['type'=>'success',"message"=>"Modification reussi "];
+
+      } catch (\Throwable $th) {
+        //throw $th;
+        return ['type'=>'error',"message"=>"Echec de modification",'errorMessage'=>$th];
+
+      }
+    }
+
+    public function savePhoto(Request $request){
+
+        if($request->image){
+
+            $filename = $request->nom .'.'.$request->image->extension();
+            $path = $request->image->storeAs('LogoCategorie',$filename,'public');
+            $categorie->image = $path;
+            return ['type'=>'success','message'=>'Enregistrement reussi'];
+        }else return ['type'=>'error','message'=>'Veillez choirir une image !'];
     }
 }
