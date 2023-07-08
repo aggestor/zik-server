@@ -23,24 +23,29 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            //le password n'a pas de confirmed il est entree comme texte simple
+            'password' => ['required', Rules\Password::defaults()],
             'phone' => ['required', 'string', 'max:255', 'unique:'.User::class],
         ]);
 
         $user = User::create([
-            'username' => $request->username,
             'email' => $request->email,
+            //champs username n'existe pas 
+            // 'username' => $request->username,
             'password' => Hash::make($request->password),
 
 
             'lastname' => $request->lastname,
             'postname' => $request->postname,
-            'firstname' => $request->firstname,
+            'firstname' => $request->name,
+            //souvenez-vous qu'on a juste mis un seul champ name et les 3 seront a l'update
+            // 'firstname' => $request->firstname,
             'phone' => $request->phone,
             'birthPlace' => $request->birthPlace,
             'birthDate' => $request->birthDate,
             'province' => $request->province,
             'city' => $request->city,
+            //ces trois champs sont dans la partie suivant donc ils peuvent tous etre null
             'image' => $request->image,
             'socialMedia' => $request->socialMedia,
             'description' => $request->description,
@@ -49,7 +54,8 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-
-        return response()->noContent();
+        //creation success should return 201 status
+        // return response()->noContent();
+        return response()->status(201);
     }
 }
