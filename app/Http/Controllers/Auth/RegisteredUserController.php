@@ -51,7 +51,8 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return response()->noContent();
+        //return response()->noContent();
+        return response()->status(201);
     }
 
     public function update(Request $request){
@@ -61,7 +62,6 @@ class RegisteredUserController extends Controller
         $user = User::find($id);
         $user->username = $request->username;
         $user->email = $request->email;
-        //$user->password = Hash::make($request->password);
         $user->lastname = $request->lastname;
         $user->postname = $request->postname;
         $user->firstname = $request->firstname;
