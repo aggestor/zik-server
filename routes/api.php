@@ -17,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('update-profile/{id}',RegisteredUserController::class,'updateTwoo');
+
+Route::get('update-photo/{id}',RegisteredUserController::class,'updateTwoo');

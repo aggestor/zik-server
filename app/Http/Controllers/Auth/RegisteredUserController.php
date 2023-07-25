@@ -85,12 +85,16 @@ class RegisteredUserController extends Controller
     }
 
     public function savePhoto(Request $request){
+
       if($request->image){
 
-          $filename = $request->nom .'.'.$request->image->extension();
-          $path = $request->image->storeAs('UsersPhotos',$filename,'public');
-          $categorie->image = $path;
-          return ['type'=>'success','message'=>'Enregistrement reussi'];
+        $user = User::find($id);
+        $filename = $request->nom .'.'.$request->image->extension();
+        $path = $request->image->storeAs('UsersPhotos',$filename,'public');
+        $user->image = $path;
+        $user->save();
+        return ['type'=>'success','message'=>'Enregistrement reussi'];
+
       }else return ['type'=>'error','message'=>'Veillez choirir une image !'];
     }
 
