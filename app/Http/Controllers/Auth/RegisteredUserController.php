@@ -85,13 +85,38 @@ class RegisteredUserController extends Controller
     }
 
     public function savePhoto(Request $request){
+      if($request->image){
+
+          $filename = $request->nom .'.'.$request->image->extension();
+          $path = $request->image->storeAs('UsersPhotos',$filename,'public');
+          $categorie->image = $path;
+          return ['type'=>'success','message'=>'Enregistrement reussi'];
+      }else return ['type'=>'error','message'=>'Veillez choirir une image !'];
+    }
+
+    public function updateTwoo(Request $request){
+
+      try {
+
+        $user = User::find($id);
 
         if($request->image){
 
-            $filename = $request->nom .'.'.$request->image->extension();
-            $path = $request->image->storeAs('LogoCategorie',$filename,'public');
-            $categorie->image = $path;
-            return ['type'=>'success','message'=>'Enregistrement reussi'];
-        }else return ['type'=>'error','message'=>'Veillez choirir une image !'];
+          $filename = $request->nom .'.'.$request->image->extension();
+          $path = $request->image->storeAs('UsersPhotos',$filename,'public');
+          $user->image = $path;
+        }
+        $user->socialMedia = $request->socialMedia;
+        $user->description = $request->description;
+        $user->save();
+
+        return ['type'=>'success',"message"=>"Modification reussi"];
+
+      } catch (\Throwable $th) {
+        //throw $th;
+        return ['type'=>'error',"message"=>"Echec de modification",'errorMessage'=>$th];
+
+      }
     }
+
 }
