@@ -90,7 +90,7 @@ class RegisteredUserController extends Controller
 
         $user = User::find($id);
         $filename = $request->nom .'.'.$request->image->extension();
-        $path = $request->image->storeAs('UsersPhotos',$filename,'public');
+        $path =          $request->image->storeAs('UsersPhotos',$filename,'public');
         $user->image = $path;
         $user->save();
         return ['type'=>'success','message'=>'Enregistrement reussi'];
